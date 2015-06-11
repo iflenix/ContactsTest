@@ -65,17 +65,19 @@ public class MainActivity extends ActionBarActivity {
         String data = null;
         if (id!= null) {
             projection = new String[]{ContactsContract.Data.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.NUMBER};
-            String where = ContactsContract.Data.CONTACT_ID + " = " + id + "AND" + ContactsContract.Data.MIMETYPE
+            String where = ContactsContract.Data.CONTACT_ID + " = " + id + " AND " + ContactsContract.Data.MIMETYPE
                     + " = '" + ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE + "'";
 
-            Cursor datacursor = getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, projection, where, null, null);
+            //String where = ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + id;
+
+
+            Cursor datacursor = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, where, null, null);
 
             int idName, idNumber;
-            data = null;
-            if (cursor.moveToFirst()) {
+            if (datacursor.moveToFirst()) {
                 idName = datacursor.getColumnIndexOrThrow(ContactsContract.Data.DISPLAY_NAME);
                 idNumber = datacursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER);
-                data = datacursor.getString(idName) + " (" + cursor.getString(idNumber) + ")";
+                data = datacursor.getString(idName) + " (" + datacursor.getString(idNumber) + ")";
             }
 
 
