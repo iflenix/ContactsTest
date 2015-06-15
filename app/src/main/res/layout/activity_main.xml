@@ -34,4 +34,31 @@
         android:layout_centerHorizontal="true"
         android:onClick="onSearchButtonClick" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="search by phone"
+        android:id="@+id/button_search_by_phone"
+        android:layout_above="@+id/get_contacts_button"
+        android:layout_toEndOf="@+id/search_button"
+        android:onClick="onSearchByPhoneClick" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pick Contact"
+        android:id="@+id/button_pick"
+        android:layout_alignTop="@+id/button_search_by_phone"
+        android:layout_toStartOf="@+id/get_contacts_button"
+        android:onClick="onPickContactButtonClick" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="AddContact"
+        android:id="@+id/add_contact_button"
+        android:layout_above="@+id/search_button"
+        android:layout_centerHorizontal="true"
+        android:onClick="onAddContactButtonClick" />
+
 </RelativeLayout>

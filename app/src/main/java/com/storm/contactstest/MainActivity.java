@@ -1,6 +1,7 @@
 package com.storm.contactstest;
 
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -48,8 +49,8 @@ public class MainActivity extends ActionBarActivity {
 
     public void onSearchButtonClick(View v) {
         ContentResolver cr = getContentResolver();
-        String searchName = "Asdf";
-        Uri searchUri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_FILTER_URI, searchName);
+        String searchName = "Алексей";
+        Uri searchUri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_FILTER_URI, Uri.encode(searchName));
         String[] projection = new String[]{ContactsContract.Contacts._ID};
 
         Cursor cursor = cr.query(searchUri, projection, null, null, null);
@@ -89,7 +90,59 @@ public class MainActivity extends ActionBarActivity {
         TextView tv = (TextView) findViewById(R.id.textView);
         tv.setText(data);
 
+    }
 
+
+    public void onSearchByPhoneClick(View v) {
+        String number = "+380505217457";
+
+        Uri lookupUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI,number);
+        Cursor phoneCursor = getContentResolver().query(lookupUri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME}, null, null, null);
+        String name = "not found";
+        if(phoneCursor.moveToFirst()){
+            int nameIdx = phoneCursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup.DISPLAY_NAME);
+            name = phoneCursor.getString(nameIdx);
+        }
+        Toast.makeText(this, name, Toast.LENGTH_SHORT).show();
+        phoneCursor.close();
+
+
+    }
+    private static int PICK_CONTACT = 0;
+
+    public void onPickContactButtonClick(View v) {
+        Intent intent = new Intent(Intent.ACTION_PICK,ContactsContract.Contacts.CONTENT_URI);
+
+        startActivityForResult(intent, PICK_CONTACT);
+
+
+
+    }    public void onAddContactButtonClick(View v) {
+        Intent intent = new Intent(ContactsContract.Intents.SHOW_OR_CREATE_CONTACT,ContactsContract.Contacts.CONTENT_URI);
+        intent.setData(Uri.parse("tel: +380503014594"));
+        intent.putExtra(ContactsContract.Intents.Insert.NAME,"Love");
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Uri contactUri = null;
+
+        if(requestCode == PICK_CONTACT && resultCode == RESULT_OK) {
+            contactUri = data.getData();
+        }
+        Toast.makeText(this, contactUri.getEncodedPath(), Toast.LENGTH_SHORT).show();
+
+        Cursor cursor = getContentResolver().query(contactUri,null,null,null,null);
+        String contName = null;
+        if(cursor.moveToFirst()){
+            int idxId = cursor.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME);
+            contName = cursor.getString(idxId);
+        }
+        TextView tv = (TextView) findViewById(R.id.textView);
+        tv.setText(contName);
+        cursor.close();
 
 
     }
@@ -116,7 +169,7 @@ public class MainActivity extends ActionBarActivity {
         contactsView.setAdapter(adapter);
         contactsView.invalidate();
 
-        //contacts.close();
+        contacts.close();
     }
 
 
